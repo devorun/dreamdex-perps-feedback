@@ -29,6 +29,19 @@ What was tested and what came out, so nothing is tested twice. Times are UTC.
 | 21 | dreamDEX HTTP API `GET https://stg.api.dreamdex.io/v0/markets` | Shannon only, 3 spot markets, no perps. The docs do not claim perps there. |
 | 22 | Funding sign on BTC: mark < index while `fundingRate` > 0 | `emaPremium` > 0 (last trade above index). In this sample the rate was exactly `emaPremium` − 0.0005. The docs do not say how the rate is derived. Not reported yet; revisit when funding can be observed on a position. |
 
+## 2026-10-21: bot kit (no funds)
+
+Setup: owner (app account) `0xB667DAae78712068Ef9c2Cab61c3217901a0309A`, bot key `0x29cF993A7c66d2Af212EEE430F120750023e8892` (not linked yet). The session wallet `0x344F…1E40` is empty and no longer used.
+
+| # | Test | Result |
+|---|---|---|
+| 23 | Bot kit `npm ci` at `2579866` | OK. npm 11 warns that the esbuild postinstall is not in allowScripts; tsx still runs. perp-core resolves SDK 0.31.0, while the docs say the app runs 0.32.1. No failure seen from that yet. |
+| 24 | `npm run perp:doctor` with bot key + OWNER_ADDRESS | OK: link `NOT LINKED`, bot gas 0 STT, owner margin 1000 unlocked / 0 withdrawable (voucher), 21 markets. |
+| 25 | perp:doctor price formatting | `toFixed(2)` shows LIT/NEAR/SUI/XRP books as bid = ask → **feedback 005**. |
+| 26 | Owner voucher account: `getPerpLeverage`, `getMaxPerpOrderSize`, `previewPerpOrderMargin` on BTC/ZEC/LIT/ZRO/TAO | All placeable, not voucher-blocked → added to **feedback 001**. |
+| 27 | perp-core `sizeOrder` / `alignQuantity` / `placePerp` (code read) | Sizes via `getMaxPerpOrderSize`; lot alignment down; returns 0 below minQuantity; IOC no-fill and PostOnlyWouldCross handled. Nothing reportable. |
+| 28 | Funding display on perp:doctor | Most markets show 10.950% APR (pays shorts) = 0.01% per 8h × 3 × 365, the positive floor the kit's comment mentions. |
+
 ## Next (needs test funds)
 
 - Claim the paper USDso voucher, then try an order on a market the docs mark `No` (confirms 001 end to end).
