@@ -56,5 +56,12 @@ ZRO  {"voucherMarketAllowed":true,"voucherLeverageCapX":20,"placeable":true,"lim
 
 ZEC, LIT and ZRO are `No` markets in the docs, yet nothing reports them as voucher-blocked.
 
+End to end: the same voucher account opened and closed a ZEC-PERP long. The orders were sent by a bot key linked with Link a Bot (`0x29cF993A7c66d2Af212EEE430F120750023e8892`), using `placeOrderFor` through [`scripts/op.ts`](../scripts/op.ts). The account had no own deposits: unlocked 1000 = voucher floor 1000, `withdrawable` 0.
+
+- Open, 2026-10-21T06:45:05Z: `op.ts place ZEC buy 0.009 1262.5 ioc`. Tx `0xb49fa126988f88f54be8219ea9e727d91f8fa246b1cce34878ff4ff47a36ec6a`, block 29131798, status success, filled 0.009 ZEC at 1259.974. `getPerpPosition` afterwards: `size` 900000 (0.009 ZEC), `avgEntryPrice` 1259.974.
+- Close, 2026-10-21T06:45:34Z: `op.ts place ZEC sell 0.009 1257.5 ioc`. Tx `0xc2b97fb2a93ad598f6b677937bb95f50694d1cd4d26ef2d0afcb43300164d40e`, block 29132088, filled at 1259.616, position back to 0.
+
+The docs say this increase should revert, and the developer page says it reverts with `limitedBy: "voucherBlocked"`. It was accepted.
+
 ## Environment
 @somnia-chain/markets-sdk 0.32.1, viem 2.57.7, Node 24. Network: Somnia Tokyo testnet (Hideki, chain ID 50383), RPC https://api.hideki2.infra.testnet.somnia.network. Wallet: none needed (read-only). Session wallet 0x344F9c80c7E4dF61080BDE9183CBD1C71eE61E40.
