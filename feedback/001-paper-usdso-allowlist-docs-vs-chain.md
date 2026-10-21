@@ -45,5 +45,16 @@ ZRO       0x2a1822b02039ddf0e293f3f7243673fc03eaf16c  No    true
 
 The voucher campaign is live at the same time (`client.getPerpVoucherCampaign(marginBank)`): distributor `0x2ACD9EFdA721450906bfE1bef3edE269636E42C4`, `grantAmount` 1000 USDso, `leverageCapX` 20.
 
+On a real voucher account the SDK's order gates agree with the chain, not the docs. Account `0xB667DAae78712068Ef9c2Cab61c3217901a0309A` holds a claimed voucher (`getPerpVoucher`: `claimed: true`, floor 1000 USDso) and 1000 USDso unlocked margin, `withdrawable` 0. At block 29128586 (2026-10-21), for a min-size bid at the mark, `getPerpLeverage`, `getMaxPerpOrderSize` and `previewPerpOrderMargin` returned:
+
+```
+BTC  {"voucherMarketAllowed":true,"voucherLeverageCapX":20,"placeable":true,"limitedBy":"collateral","voucherBlocked":false}
+ZEC  {"voucherMarketAllowed":true,"voucherLeverageCapX":20,"placeable":true,"limitedBy":"collateral","voucherBlocked":false}
+LIT  {"voucherMarketAllowed":true,"voucherLeverageCapX":20,"placeable":true,"limitedBy":"collateral","voucherBlocked":false}
+ZRO  {"voucherMarketAllowed":true,"voucherLeverageCapX":20,"placeable":true,"limitedBy":"collateral","voucherBlocked":false}
+```
+
+ZEC, LIT and ZRO are `No` markets in the docs, yet nothing reports them as voucher-blocked.
+
 ## Environment
 @somnia-chain/markets-sdk 0.32.1, viem 2.57.7, Node 24. Network: Somnia Tokyo testnet (Hideki, chain ID 50383), RPC https://api.hideki2.infra.testnet.somnia.network. Wallet: none needed (read-only). Session wallet 0x344F9c80c7E4dF61080BDE9183CBD1C71eE61E40.
