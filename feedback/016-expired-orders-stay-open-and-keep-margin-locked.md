@@ -22,7 +22,7 @@ After expiry:
 - `getOrder` still returns the full `quantityRemaining`, and `reduceOrderFor` reverts `ExpiredOrderMustBeCancelled`.
 - After the cancel, the order shows in history as `Expired`, not `Cancelled`.
 
-So an account that uses short expiries as a safety net (for example, quotes that "expire on their own") keeps margin tied up in orders that can no longer trade. Its open-orders view keeps showing them as live. Nothing in the perps docs (trader Orders page, developer page, SDK Perps page) says expired orders must be cancelled to free their margin. The Functions reference mentions `ExpiredOrderMustBeCancelled` for reduces only.
+So an account that uses short expiries as a safety net (for example, quotes that "expire on their own") keeps margin tied up in orders that can no longer trade. Its open-orders view keeps showing them as live. The trader Orders page, the developer perps page and the SDK Perps page never say that expired orders must be cancelled to free their margin. The Functions reference mentions `ExpiredOrderMustBeCancelled` for reduces only. The one place that explains it is the TSDoc of the live-store read `getLiveUserOrders` ("on chain it holds its escrow until a cancel or a sweep"). It is not on `getOpenOrders`, the read that returns these rows.
 
 ## Evidence
 Second run, `node --env-file=../.env expiry-test.ts ETH 40`, 2026-10-21T10:09:12Z:
