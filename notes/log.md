@@ -62,6 +62,7 @@ Setup: owner (app account) `0xB667DAae78712068Ef9c2Cab61c3217901a0309A`, bot key
 | 42 | bot kit perp-starter `DRY_RUN=true` on ETH-PERP, 20 USDso | Sizes 0.0082 ETH; TP/SL from the mark. Nothing sent. |
 | 43 | Funding history rows vs chain | Each hourly row moves `cumulativeFundingPerUnit` by ≈ index × rate / 8, as the docs say. |
 | 44 | `watchOrderBook` (30 s, ETH) vs `fetchOrderBook` | 25 updates, never crossed, timestamps monotonic, final book identical. |
+| 46 | Funding settlement on a held BTC long (0.00013, entry 82907.6), boundary 07:11:43Z; closed at 07:12:23Z, tx `0x91230e2fe56fac78d8febdebd963b5474b2a79c911d54c63e5a929224327c2fd` | `FundingSettled.payment` 0.001594655649114580 USDso (long paid, rate > 0) = size × Δ`cumulativeFundingPerUnit`, rounded up 1 wei. Docs formula size × index × rate / 8, with the rate published at that settlement, gives 0.0015946 (index read 35 s later). `accruedFunding` from `getPerpPositionAnalytics` before the close was the same 1594655649114580. Realized PnL −0.001547 = (82895.7 − 82907.6) × 0.00013. Balance 999.993636344350885420 = previous − realized − funding, to the wei. All consistent. |
 | 45 | `getMaxPerpOrderSize` vs pool acceptance (ETH, 4 cases) | Identical when simulated at the SDK's `asOfBlock`. A first run at a different block looked off by one lot; that was the block, not a bug. |
 
 ## Next (needs test funds)
