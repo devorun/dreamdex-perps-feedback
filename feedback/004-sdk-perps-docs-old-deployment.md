@@ -28,6 +28,8 @@ listPerpMarkets({ baseSymbol: "WBTC" }) -> 0 rows
 docs sample threw TypeError: Cannot read properties of undefined (reading 'id')
 ```
 
+The same text ships inside the npm package, in `node_modules/@somnia-chain/markets-sdk/docs/PERPS.md`: line 3 ("Perps are live on testnet"), line 571 ("10 pools, four of them restricted") and line 1208 (the WBTC sample).
+
 The `USDSO` casing in the same sentence is a separate problem, reported in [003](003-perp-symbol-case-usdso.md).
 
 ## Environment

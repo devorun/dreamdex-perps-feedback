@@ -25,5 +25,7 @@ fetchFundingRate("BTC/USDso:USDso") -> OK, fundingRate=0.001167515494303764
 
 All 21 perp symbols after `loadMarkets()` use `USDso:USDso`, for example `ETH/USDso:USDso` and `ZRO/USDso:USDso`.
 
+The same Quick start ships inside the npm package, in `node_modules/@somnia-chain/markets-sdk/docs/PERPS.md` lines 1197-1200.
+
 ## Environment
 @somnia-chain/markets-sdk 0.32.1, viem 2.57.7, Node 24. Network: Somnia Tokyo testnet (Hideki, chain ID 50383), chain `hidekiTestnet` from `@somnia-chain/markets-sdk/chains`. Wallet: none needed (read-only). Session wallet 0x344F9c80c7E4dF61080BDE9183CBD1C71eE61E40.
