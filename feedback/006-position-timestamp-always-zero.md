@@ -1,5 +1,5 @@
 # Position lastUpdatedTimestampNs is never written, so fetchPositions() dates every open position 1970-01-01
-Severity: normal
+Severity: major
 Area: SDK
 
 ## Steps to reproduce
@@ -12,6 +12,8 @@ Area: SDK
 
 ## Actual
 `lastUpdatedTimestampNs` is `0` for an open position on chain. `fetchPositions()` derives `timestamp` from it (`Number(pos.lastUpdatedTimestampNs / 1000000n)` in `dist/unified/exchange.js`), so every position reports `timestamp: 0` and `datetime: "1970-01-01T00:00:00.000Z"`. The indexer has the real time (`updatedAt: "1792565299"`) for the same position. Any UI or bot that shows "opened / last changed" from the unified API shows 1970, and code that ages positions by this field treats every position as 56 years old.
+
+Rated major because the data is wrong on every position, not on an edge case.
 
 ## Evidence
 `node positions-view.ts`, 2026-10-21T06:48:12Z, right after the fill (trimmed):

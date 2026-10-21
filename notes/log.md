@@ -60,6 +60,9 @@ Setup: owner (app account) `0xB667DAae78712068Ef9c2Cab61c3217901a0309A`, bot key
 | 40 | `placeOrdersFor` batch with an unfillable IOC | `successes [false, true]`; indexer rejection `ImmediateOrCancelNoFill`, `requestIndex 0`, as documented. |
 | 41 | `fullQuantity` after reduce | Rewritten to the reduced size; history calls it "original size" → **010**. |
 | 42 | bot kit perp-starter `DRY_RUN=true` on ETH-PERP, 20 USDso | Sizes 0.0082 ETH; TP/SL from the mark. Nothing sent. |
+| 43 | Funding history rows vs chain | Each hourly row moves `cumulativeFundingPerUnit` by ≈ index × rate / 8, as the docs say. |
+| 44 | `watchOrderBook` (30 s, ETH) vs `fetchOrderBook` | 25 updates, never crossed, timestamps monotonic, final book identical. |
+| 45 | `getMaxPerpOrderSize` vs pool acceptance (ETH, 4 cases) | Identical when simulated at the SDK's `asOfBlock`. A first run at a different block looked off by one lot; that was the block, not a bug. |
 
 ## Next (needs test funds)
 

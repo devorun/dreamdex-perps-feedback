@@ -1,5 +1,5 @@
 # No reduce-only option for regular perp orders in the pool or SDK; createOrder silently drops a reduceOnly param
-Severity: normal
+Severity: major
 Area: SDK
 
 ## Steps to reproduce
@@ -26,6 +26,8 @@ functions mentioning reduceOnly in these ABIs: none
 The consequences:
 - `exchange.createOrder(symbol, "limit", "sell", amount, price, { reduceOnly: true })` from JavaScript (or with a cast in TypeScript) places a plain order. `createOrder` in `dist/unified/exchange.js` reads only `params.timeInForce`, `postOnly`, `slippage` and the builder fields. The flag is dropped without an error, and the order can open or flip a position. CCXT users pass `reduceOnly` routinely.
 - A bot linked with Link a Bot has no reduce-only path at all: it cannot place stops, and regular orders have no flag. The bot kit's `perp-guard` and `closePosition` therefore close with a plain opposite IOC sized from a position read made before the send. If the position shrinks in between (a fill, a partial liquidation, another bot), the "close" opens a position the other way. Reduce-only exists to prevent exactly that.
+
+Rated major because a feature the docs offer is missing, the SDK drops the flag without an error, and the order can flip a position.
 
 ## Evidence
 `node 009-no-reduce-only.ts`, 2026-10-21 (output above), against @somnia-chain/markets-sdk 0.32.1.

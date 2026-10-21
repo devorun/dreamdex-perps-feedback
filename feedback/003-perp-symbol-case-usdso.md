@@ -1,5 +1,5 @@
 # Documented perp symbol "BTC/USDSO:USDSO" does not resolve; the SDK builds "BTC/USDso:USDso" and its error blames loadMarkets()
-Severity: normal
+Severity: major
 Area: SDK
 
 ## Steps to reproduce
@@ -13,6 +13,8 @@ The documented symbol resolves after `loadMarkets()`, or the docs use the symbol
 `loadMarkets()` builds `BTC/USDso:USDso` from the token's on-chain symbol `USDso`, and the lookup in `SymbolTable.resolve` is case-sensitive. Every perp symbol written as documented fails, so every line of the Quick start throws.
 
 The error also points the wrong way: `unknown symbol BTC/USDSO:USDSO — call loadMarkets() first`, raised right after `loadMarkets()` succeeded. A developer who follows it calls `loadMarkets()` again and gets the same error.
+
+Rated major because the documented perps Quick start does not work at all: every call in it fails.
 
 ## Evidence
 `node 003-unified-symbol-case.ts`, run 2026-10-21T06:15:11Z (two earlier runs in the same session also failed with the same error on `fetchTicker`):
