@@ -12,6 +12,10 @@ The Errors page (https://app.testnet.dreamdex.io/docs/developers/contracts/error
 
 > `0x71fa8de6 | OrderIdMismatch() | The stored order for that slot no longer matches the supplied OrderId (already filled, cancelled, or expired-and-reused). Re-read state with getOrder / getOwnOpenOrders before cancelling.`
 
+The Functions page (https://app.testnet.dreamdex.io/docs/developers/contracts/functions) says the same under `cancelOrder`:
+
+> `OrderIdMismatch (0x71fa8de6) - the slot no longer holds that OrderId. The order is already in a terminal state (filled, cancelled, or expired-and-reused) - there is nothing to cancel.`
+
 So a cancel or reduce of a finished order reverts `OrderIdMismatch()` (or `IncorrectOrder()`, which `getOrder` returns for the same ids).
 
 ## Actual
