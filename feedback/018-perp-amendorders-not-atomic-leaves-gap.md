@@ -1,5 +1,5 @@
 # Perp pool amendOrders is not atomic as documented: a rejected replacement cancels the original and returns 0, leaving a gap
-Severity: normal
+Severity: major
 Area: docs
 
 ## Steps to reproduce
@@ -17,6 +17,8 @@ The batch reverts (`AmendReplacementRejected(0, 3)` or the replacement's own err
 
 ## Actual
 The call succeeds and returns `newOrderIds = ["0"]`. The trace shows the original order cancelled (`OrderCancelled`), its margin unlocked, an `AmendRejected`-type log (undecoded topic `0x301df543`), and no replacement. A maker re-laddering a perp book with `amendOrders` loses that rung silently, with no revert to catch. This is the gap the docs say cannot happen. The perp pool behaves like the "per-rung" pool the SDK's packaged `docs/SPOT.md` describes ("applies the other amendments and leaves the rejected one without an order … reads `0n`"), not like the "fully atomic" one the dreamDEX developer, Functions and Errors pages describe for perps. The singular `amendOrder` does revert (`PostOnlyWouldCross`), so code that tests with one order and ships with a batch sees different behaviour.
+
+Rated major because the documented atomicity does not exist: when a replacement fails, the original order is cancelled and the quote is left with a gap.
 
 ## Evidence
 `node --env-file=../.env 018-perp-amendorders-gap.ts ETH`, 2026-10-21T10:16:38Z:

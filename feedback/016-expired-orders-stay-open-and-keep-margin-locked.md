@@ -1,5 +1,5 @@
 # Expired perp orders stay "open" in getOpenOrders (with no expiry field) and keep their margin locked until someone cancels them
-Severity: normal
+Severity: major
 Area: SDK
 
 ## Steps to reproduce
@@ -23,6 +23,8 @@ After expiry:
 - After the cancel, the order shows in history as `Expired`, not `Cancelled`.
 
 So an account that uses short expiries as a safety net (for example, quotes that "expire on their own") keeps margin tied up in orders that can no longer trade. Its open-orders view keeps showing them as live. The trader Orders page, the developer perps page and the SDK Perps page never say that expired orders must be cancelled to free their margin. The Functions reference mentions `ExpiredOrderMustBeCancelled` for reduces only. The one place that explains it is the TSDoc of the live-store read `getLiveUserOrders` ("on chain it holds its escrow until a cancel or a sweep"). It is not on `getOpenOrders`, the read that returns these rows.
+
+Rated major because the open-orders data is wrong for every expired order, and the margin those orders hold stays locked until someone cancels them.
 
 ## Evidence
 Second run, `node --env-file=../.env expiry-test.ts ETH 40`, 2026-10-21T10:09:12Z:

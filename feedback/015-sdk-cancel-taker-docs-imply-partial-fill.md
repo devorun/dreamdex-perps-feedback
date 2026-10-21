@@ -1,5 +1,5 @@
 # SDK docs say CANCEL_TAKER "cancels the remaining taker quantity", but a self-match reverts the whole order, including fills against other traders
-Severity: normal
+Severity: major
 Area: SDK
 
 ## Steps to reproduce
@@ -16,6 +16,8 @@ Per the SDK wording, the sell fills the other traders' bids ahead of the account
 
 ## Actual
 The whole call reverts `SelfMatchCancelTaker()`. Nothing fills, not even the other traders' liquidity ahead of the self-match. This is what the "My order was rejected" FAQ ("refuses the whole incoming order … none of the new order is placed or filled") and the Errors page describe, but it is the opposite of "cancel the remaining taker quantity". A bot that reads the SDK expects a crossing IOC to keep its fills when it brushes its own quote, and gets a reverted, gas-burning transaction instead. A maker that both quotes and takes (the bot kit's perp-maker plus a hedge) hits this whenever it crosses its own ladder.
+
+Rated major because the docs lead developers to expect a partial fill, but the whole transaction reverts.
 
 ## Evidence
 `node --env-file=../.env self-match.ts ETH behind 0`, 2026-10-21T10:05:49Z:
