@@ -1,0 +1,10 @@
+{
+  "name": "dreamdex-perps-feedback-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Minimal read-only reproduction scripts. Run with Node >= 22.6 (native TypeScript stripping): node <script>.ts",
+  "dependencies": {
+    "@somnia-chain/markets-sdk": "0.32.1",
+    "viem": "2.57.7"
+  }
+}
