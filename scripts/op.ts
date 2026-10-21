@@ -6,11 +6,12 @@
 //   node --env-file=../.env op.ts raw    <BASE> <buy|sell> <qtyRaw> <priceRaw> <limit|fok|ioc|post> [--nosim] [--gas N]
 //   node --env-file=../.env op.ts cancel <BASE> <orderId> [--nosim]
 //   node --env-file=../.env op.ts reduce <BASE> <orderId> <newQtyRemaining> [--nosim]
+//   node --env-file=../.env op.ts replay <BASE> <txHash> <blockNumber>
 //
 // --nosim sends without a local simulation, to observe the on-chain result of a reverting call.
 import { SomniaMarkets, contractErrorsAbi, decodePlaceOrder } from "@somnia-chain/markets-sdk"
 import { hidekiTestnet } from "@somnia-chain/markets-sdk/chains"
-import { BaseError, ContractFunctionRevertedError, createPublicClient, createWalletClient, formatUnits, http, parseAbi, parseUnits } from "viem"
+import { BaseError, ContractFunctionRevertedError, decodeErrorResult, createPublicClient, createWalletClient, formatUnits, http, parseAbi, parseUnits } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 
 const RPC = "https://api.hideki2.infra.testnet.somnia.network"
@@ -53,6 +54,22 @@ function revertName(e: unknown): string {
   return String(e)
 }
 
+// The docs' advice for a status-0 receipt: eth_call the same transaction at the parent block.
+async function replay(hash: `0x${string}`, blockNumber: bigint, gas: bigint) {
+  const tx = await pub.getTransaction({ hash })
+  try {
+    const r = await pub.call({ to: tx.to!, data: tx.input, account: tx.from, value: tx.value, blockNumber, gas })
+    console.log(`replay at block ${blockNumber}: no revert, returned ${r.data}`)
+  } catch (e) {
+    const data = (e as any)?.walk?.((x: any) => typeof x?.data === "string")?.data as `0x${string}` | undefined
+    let decoded = "undecodable"
+    if (data && data !== "0x") {
+      try { const d = decodeErrorResult({ abi: ABI, data }); decoded = `${d.errorName}(${j(d.args ?? [])})` } catch { decoded = `raw ${data}` }
+    } else decoded = "empty revert data"
+    console.log(`replay at block ${blockNumber}: revert, ${decoded}`)
+  }
+}
+
 async function state() {
   const [book, pos, acct, orders] = await Promise.all([
     ex.loadMarkets().then(() => ex.fetchOrderBook(`${base}/USDso:USDso`, 3)),
@@ -83,9 +100,7 @@ async function send(functionName: "placeOrderFor" | "cancelOrderFor" | "reduceOr
   const receipt = await pub.waitForTransactionReceipt({ hash })
   console.log("tx", hash, "status", receipt.status, "block", receipt.blockNumber, "gasUsed", receipt.gasUsed)
   if (receipt.status !== "success") {
-    try {
-      await pub.call({ to: pool, data: (await pub.getTransaction({ hash })).input, account: bot.address, blockNumber: receipt.blockNumber - 1n, gas })
-    } catch (e) { console.log("replay at parent block:", revertName(e)) }
+    await replay(hash, receipt.blockNumber - 1n, gas)
     return
   }
   if (functionName === "placeOrderFor") {
@@ -113,7 +128,8 @@ else if (cmd === "place" || cmd === "raw") {
   const expire = BigInt(Math.floor(Date.now() / 1000) + 30 * 24 * 3600) * 1_000_000_000n
   console.log("placeOrderFor", j({ owner: OWNER, isBid: side === "buy", price, priceHuman: formatUnits(price, qd), quantity, qtyHuman: formatUnits(quantity, bd), orderType: t }))
   await send("placeOrderFor", [OWNER, side === "buy", 0n, price, quantity, expire, orderType, 0, "0x0000000000000000000000000000000000000000", 0n])
-} else if (cmd === "cancel") await send("cancelOrderFor", [OWNER, BigInt(rest[0])])
+} else if (cmd === "replay") await replay(rest[0] as `0x${string}`, BigInt(rest[1]), 10_000_000n)
+else if (cmd === "cancel") await send("cancelOrderFor", [OWNER, BigInt(rest[0])])
 else if (cmd === "reduce") await send("reduceOrderFor", [OWNER, BigInt(rest[0]), BigInt(rest[1])])
 else console.log("unknown command")
 await ex.close()
