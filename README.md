@@ -11,4 +11,4 @@ Feedback on the dreamDEX Perps API and SDK on Somnia Tokyo testnet (Hideki, chai
 
 ## Setup
 
-Scripts that sign read `TESTNET_PRIVATE_KEY` from a local `.env`. `.env` is gitignored and must never be committed.
+Scripts that sign read `BOT_PRIVATE_KEY` from a local `.env`. `.env` is gitignored and must never be committed.
