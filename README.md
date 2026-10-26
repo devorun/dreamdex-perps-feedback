@@ -5,7 +5,7 @@ Feedback on the dreamDEX Perps API and SDK on Somnia Tokyo testnet (Hideki, chai
 ## Layout
 
 - `feedback/`: one file per issue, `NNN-short-kebab-title.md`
-- `scripts/`: minimal reproduction scripts linked from the reports (`cd scripts && npm install && node <script>.ts`, Node >= 22.6). Most are read-only and need no key. Scripts that place, cancel or simulate orders as a bot linked with Link a Bot (`op.ts`, `self-match.ts`, `expiry-test.ts`, `slot-reuse.ts`, `batch-test.ts`, `edge-sims.ts`, `max-size-check.ts`, `amend-sims.ts`, `watch-latency.ts`, `positions-view-latency.ts`, `band-sims.ts`, `018-perp-amendorders-gap.ts`, `019-stop-orders-need-operator-registry.ts`) need `BOT_PRIVATE_KEY` and run as `node --env-file=../.env <script>.ts`. `008-cancel-finished-order.ts` uses it when present and otherwise simulates from the owner address.
+- `scripts/`: minimal reproduction scripts linked from the reports (`cd scripts && npm install && node <script>.ts`, Node >= 22.6). Most are read-only and need no key. Scripts that place, cancel or simulate orders as a bot linked with Link a Bot (`op.ts`, `self-match.ts`, `expiry-test.ts`, `slot-reuse.ts`, `batch-test.ts`, `edge-sims.ts`, `max-size-check.ts`, `amend-sims.ts`, `watch-latency.ts`, `positions-view-latency.ts`, `band-sims.ts`, `018-perp-amendorders-gap.ts`, `019-stop-orders-need-operator-registry.ts`, `020-createorder-below-min.ts`) need `BOT_PRIVATE_KEY` and run as `node --env-file=../.env <script>.ts`. `008-cancel-finished-order.ts` uses it when present and otherwise simulates from the owner address.
 - `notes/surface.md`: perps API / SDK inventory
 - `notes/log.md`: what was tested and the result
 
@@ -32,6 +32,7 @@ Feedback on the dreamDEX Perps API and SDK on Somnia Tokyo testnet (Hideki, chai
 | [017](feedback/017-sdk-docs-document-apis-missing-from-0-32-1.md) | SDK Perps docs document APIs that @somnia-chain/markets-sdk 0.32.1 does not have (quotePerpClose, getPerpPositionsPage, CreditReclaimed); their samples throw | normal | docs |
 | [018](feedback/018-perp-amendorders-not-atomic-leaves-gap.md) | Perp pool amendOrders is not atomic as documented: a rejected replacement cancels the original and returns 0, leaving a gap | major | docs |
 | [019](feedback/019-stop-orders-fail-with-documented-config.md) | Perp TP/SL (stop) orders fail with the documented SDK setup: SOMNIA_HIDEKI_TESTNET_ADDRESSES has no operatorPermissionsRegistry | normal | SDK |
+| [020](feedback/020-createorder-min-check-assumes-lot-equals-min.md) | createOrder checks the perp minimum as "one lot" (assuming lot = minQuantity), so sub-minimum orders (BTC: 1-12 lots) pass the SDK and revert on chain | normal | SDK |
 
 ## Setup
 
