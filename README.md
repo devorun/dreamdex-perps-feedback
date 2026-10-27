@@ -33,6 +33,7 @@ Feedback on the dreamDEX Perps API and SDK on Somnia Tokyo testnet (Hideki, chai
 | [018](feedback/018-perp-amendorders-not-atomic-leaves-gap.md) | Perp pool amendOrders is not atomic as documented: a rejected replacement cancels the original and returns 0, leaving a gap | major | docs |
 | [019](feedback/019-stop-orders-fail-with-documented-config.md) | Perp TP/SL (stop) orders fail with the documented SDK setup: SOMNIA_HIDEKI_TESTNET_ADDRESSES has no operatorPermissionsRegistry | normal | SDK |
 | [020](feedback/020-createorder-min-check-assumes-lot-equals-min.md) | createOrder checks the perp minimum as "one lot" (assuming lot = minQuantity), so sub-minimum orders (BTC: 1-12 lots) pass the SDK and revert on chain | normal | SDK |
+| [021](feedback/021-margin-events-block-range-silently-ignored.md) | getMarginEvents ignores a sinceBlock/toBlock range without an error and returns the account's whole history, so the documented equity-flow netting is silently wrong | normal | SDK |
 
 ## Setup
 
